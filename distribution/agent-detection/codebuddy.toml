@@ -4,12 +4,13 @@ min_engine_version = 2
 updated_at = "2026-10-04T00:00:00Z"
 aliases = ["codebuddy-code"]
 
-# CodeBuddy Code is a Claude Code fork: same horizontal-rule composer box with a
-# ">" prompt, same dialog footers ("esc to cancel", "enter to confirm/select").
-# The status-prefixed OSC title is the primary locale-independent signal:
-# a braille spinner while streaming, a settled ✳ marker once idle. The composer
-# stays visible while responding, so the prompt box is idle evidence only when
-# no higher-priority working or blocked rule claims the screen first.
+# CodeBuddy Code (Tencent's coding agent CLI) renders a horizontal-rule
+# composer box with a ">" prompt and the same dialog footer idioms as Claude
+# Code ("esc to cancel", "enter to confirm/select"). The status-prefixed OSC
+# title is the primary locale-independent signal: a braille spinner while
+# streaming, a settled ✳ marker once idle. The composer stays visible while
+# responding, so the prompt box is idle evidence only when no higher-priority
+# working or blocked rule claims the screen first.
 
 [[rules]]
 id = "osc_title_working"
