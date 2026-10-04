@@ -1421,6 +1421,11 @@ impl TerminalState {
                     "qwen",
                     Some("startup" | "clear" | "resume" | "compact" | "branch")
                 )
+                | (
+                    "herdr:codebuddy",
+                    "codebuddy",
+                    Some("startup" | "clear" | "resume" | "compact" | "branch")
+                )
                 | ("herdr:antigravity_cli", "agy", None)
         )
     }

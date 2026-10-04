@@ -65,10 +65,11 @@ pub enum Agent {
     Letta,
     Maki,
     Muse,
+    Codebuddy,
 }
 
 impl Agent {
-    pub const ALL: [Self; 24] = [
+    pub const ALL: [Self; 25] = [
         Self::Pi,
         Self::Claude,
         Self::Codex,
@@ -93,9 +94,10 @@ impl Agent {
         Self::Letta,
         Self::Maki,
         Self::Muse,
+        Self::Codebuddy,
     ];
 
-    pub const SCREEN_MANIFEST_AGENTS: [Self; 22] = [
+    pub const SCREEN_MANIFEST_AGENTS: [Self; 23] = [
         Self::Pi,
         Self::Claude,
         Self::Codex,
@@ -118,6 +120,7 @@ impl Agent {
         Self::Letta,
         Self::Maki,
         Self::Muse,
+        Self::Codebuddy,
     ];
 }
 
@@ -147,6 +150,7 @@ pub fn agent_label(agent: Agent) -> &'static str {
         Agent::Letta => "letta",
         Agent::Maki => "maki",
         Agent::Muse => "muse",
+        Agent::Codebuddy => "codebuddy",
     }
 }
 
@@ -182,6 +186,7 @@ pub fn interactive_agent_executable(agent: Agent) -> &'static str {
         Agent::Letta => "letta",
         Agent::Maki => "maki",
         Agent::Muse => "muse",
+        Agent::Codebuddy => "codebuddy",
     }
 }
 
@@ -222,6 +227,7 @@ fn lookup_agent(name: &str) -> Option<Agent> {
         "letta" | "letta-code" | "letta code" => Some(Agent::Letta),
         "maki" => Some(Agent::Maki),
         "muse" | "muse-code" | "muse-cli" => Some(Agent::Muse),
+        "codebuddy" | "codebuddy-code" | "codebuddy code" => Some(Agent::Codebuddy),
         _ if is_muse_versioned_binary(name) => Some(Agent::Muse),
         _ => None,
     }
@@ -339,6 +345,7 @@ pub(crate) fn session_identity_only_integration(source: &str, agent_label: &str)
             | ("herdr:qwen", "qwen")
             | ("herdr:letta", "letta")
             | ("herdr:antigravity_cli", "agy")
+            | ("herdr:codebuddy", "codebuddy")
     )
 }
 
@@ -943,6 +950,8 @@ mod tests {
         assert_eq!(identify_agent("letta"), Some(Agent::Letta));
         assert_eq!(identify_agent("Letta Code"), Some(Agent::Letta));
         assert_eq!(identify_agent("maki"), Some(Agent::Maki));
+        assert_eq!(identify_agent("codebuddy"), Some(Agent::Codebuddy));
+        assert_eq!(identify_agent("Codebuddy Code"), Some(Agent::Codebuddy));
         assert_eq!(identify_agent("muse"), Some(Agent::Muse));
         assert_eq!(identify_agent("muse-code"), Some(Agent::Muse));
         assert_eq!(identify_agent("muse-cli"), Some(Agent::Muse));
@@ -984,6 +993,7 @@ mod tests {
         assert_eq!(parse_agent_label("letta-code"), Some(Agent::Letta));
         assert_eq!(parse_agent_label("maki"), Some(Agent::Maki));
         assert_eq!(parse_agent_label("kilo-code"), Some(Agent::Kilo));
+        assert_eq!(parse_agent_label("codebuddy-code"), Some(Agent::Codebuddy));
     }
 
     #[test]
@@ -1029,6 +1039,7 @@ mod tests {
             (Agent::Letta, "letta"),
             (Agent::Maki, "maki"),
             (Agent::Muse, "muse"),
+            (Agent::Codebuddy, "codebuddy"),
         ];
         assert_eq!(expected.len(), Agent::ALL.len());
         for (agent, executable) in expected {
@@ -1060,6 +1071,7 @@ mod tests {
             ("herdr:qwen", "qwen", Agent::Qwen),
             ("herdr:letta", "letta", Agent::Letta),
             ("herdr:antigravity_cli", "agy", Agent::Antigravity),
+            ("herdr:codebuddy", "codebuddy", Agent::Codebuddy),
         ] {
             assert!(!full_lifecycle_hook_authority(source, label));
             assert!(session_identity_only_integration(source, label));

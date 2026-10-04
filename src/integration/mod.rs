@@ -218,6 +218,18 @@ const QWEN_HOOK_ASSET: &str = if cfg!(windows) {
 };
 const QWEN_INTEGRATION_VERSION: u32 = 1;
 const QWEN_HOOK_EVENTS: [(&str, &str); 1] = [("SessionStart", "session")];
+const CODEBUDDY_HOOK_INSTALL_NAME: &str = if cfg!(windows) {
+    "herdr-agent-session.ps1"
+} else {
+    "herdr-agent-session.sh"
+};
+const CODEBUDDY_HOOK_ASSET: &str = if cfg!(windows) {
+    include_str!("assets/codebuddy/herdr-agent-session.ps1")
+} else {
+    include_str!("assets/codebuddy/herdr-agent-session.sh")
+};
+const CODEBUDDY_INTEGRATION_VERSION: u32 = 1;
+const CODEBUDDY_HOOK_EVENTS: [(&str, &str); 1] = [("SessionStart", "session")];
 const LETTA_HOOK_INSTALL_NAME: &str = if cfg!(windows) {
     "herdr-agent-session.ps1"
 } else {

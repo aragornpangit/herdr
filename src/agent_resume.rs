@@ -171,6 +171,7 @@ pub fn is_reserved_native_state_source(source: &str, agent: &str) -> bool {
             | ("herdr:qwen", "qwen")
             | ("herdr:cursor", "cursor")
             | ("herdr:grok", "grok")
+            | ("herdr:codebuddy", "codebuddy")
     )
 }
 
@@ -262,6 +263,13 @@ pub fn plan(source: &str, agent: &str, session_ref: &AgentSessionRef) -> Option<
         ("herdr:qwen", "qwen", AgentSessionRefKind::Id) => {
             vec!["qwen".into(), "--resume".into(), session_ref.value.clone()]
         }
+        ("herdr:codebuddy", "codebuddy", AgentSessionRefKind::Id) => {
+            vec![
+                "codebuddy".into(),
+                "--resume".into(),
+                session_ref.value.clone(),
+            ]
+        }
         ("herdr:kilo", "kilo", AgentSessionRefKind::Id) => {
             vec!["kilo".into(), "--session".into(), session_ref.value.clone()]
         }
@@ -345,6 +353,7 @@ pub(crate) fn is_official_agent_source(source: &str, agent: &str) -> bool {
             | ("herdr:antigravity_cli", "agy")
             | ("herdr:grok", "grok")
             | ("herdr:letta", "letta")
+            | ("herdr:codebuddy", "codebuddy")
     )
 }
 
@@ -582,6 +591,16 @@ mod tests {
             .unwrap()
             .argv,
             vec!["qwen", "--resume", "qwen-session"]
+        );
+        assert_eq!(
+            plan(
+                "herdr:codebuddy",
+                "codebuddy",
+                &AgentSessionRef::id("codebuddy-session").unwrap()
+            )
+            .unwrap()
+            .argv,
+            vec!["codebuddy", "--resume", "codebuddy-session"]
         );
         assert_eq!(
             plan(

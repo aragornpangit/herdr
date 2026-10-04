@@ -1,0 +1,126 @@
+id = "codebuddy"
+version = "2026.10.04.1"
+min_engine_version = 2
+updated_at = "2026-10-04T00:00:00Z"
+aliases = ["codebuddy-code"]
+
+# CodeBuddy Code is a Claude Code fork: same horizontal-rule composer box with a
+# ">" prompt, same dialog footers ("esc to cancel", "enter to confirm/select").
+# The status-prefixed OSC title is the primary locale-independent signal:
+# a braille spinner while streaming, a settled ✳ marker once idle. The composer
+# stays visible while responding, so the prompt box is idle evidence only when
+# no higher-priority working or blocked rule claims the screen first.
+
+[[rules]]
+id = "osc_title_working"
+state = "working"
+priority = 1100
+region = "osc_title"
+visible_working = true
+regex = ['^[\x{2800}-\x{28FF}] ']
+
+[[rules]]
+id = "live_turn_working"
+state = "working"
+priority = 970
+region = "bottom_non_empty_lines(12)"
+visible_working = true
+any = [
+  { line_regex = ['^\s*[⏸⏵].*esc to interrupt(?:\s|·|$)'] },
+  { line_regex = ['^\s*[\x{002A}\x{00B7}\x{2700}-\x{27BF}\x{2800}-\x{28FF}]\s+Waking\x{2026}'] },
+]
+
+[[rules]]
+id = "live_blocked_form"
+state = "blocked"
+priority = 980
+region = "after_last_horizontal_rule"
+visible_blocker = true
+contains = ["esc to cancel"]
+any = [
+  { contains = ["enter to confirm"] },
+  { contains = ["enter to select"], any = [
+    { contains = ["tab/arrow keys to navigate"] },
+    { contains = ["arrow keys to navigate"] },
+    { contains = ["arrows to navigate"] },
+    { contains = ["↑/↓ to navigate"] },
+    { contains = ["↑↓ to navigate"] },
+  ] },
+]
+
+[[rules]]
+id = "bash_permission_prompt"
+state = "blocked"
+priority = 850
+region = "whole_recent"
+visible_blocker = true
+contains = ["do you want to proceed?"]
+any = [
+  { contains = ["bash command"] },
+  { contains = ["bash("] },
+  { contains = ["contains expansion"] },
+  { contains = ["tab to amend"] },
+]
+all = [
+  { any = [
+    { line_regex = ['(?i)^\s*❯?\s*yes\b'] },
+    { line_regex = ['(?i)^\s*❯?\s*1\.\s*yes\b'] },
+    { line_regex = ['(?i)^\s*❯?\s*2\.\s*yes\b'] },
+    { line_regex = ['(?i)^\s*❯?\s*2\.\s*no\b'] },
+    { line_regex = ['(?i)^\s*❯?\s*3\.\s*no\b'] },
+  ] },
+]
+
+[[rules]]
+id = "generic_permission_prompt"
+state = "blocked"
+priority = 840
+region = "after_last_horizontal_rule"
+visible_blocker = true
+contains = ["do you want to proceed?", "esc to cancel"]
+all = [
+  { any = [
+    { line_regex = ['(?i)^\s*❯?\s*1\.\s*yes\b'] },
+    { line_regex = ['(?i)^\s*2\.\s*yes\b'] },
+    { line_regex = ['(?i)^\s*2\.\s*no\b'] },
+    { line_regex = ['(?i)^\s*3\.\s*no\b'] },
+  ] },
+]
+
+[[rules]]
+id = "legacy_no_prompt_blocker"
+state = "blocked"
+priority = 300
+region = "whole_recent"
+any = [
+  { contains = ["do you want to"], any = [{ contains = ["yes"] }, { contains = ["❯"] }] },
+  { contains = ["would you like to"], any = [{ contains = ["yes"] }, { contains = ["❯"] }] },
+  { contains = ["waiting for permission"] },
+  { contains = ["do you want to proceed?", "esc to cancel"] },
+]
+not = [
+  { regex = ['(?m)^\s*>\s*$'] },
+]
+
+[[rules]]
+id = "live_prompt_box"
+state = "idle"
+priority = 950
+region = "prompt_box_body"
+visible_idle = true
+line_regex = ['^\s*>']
+not = [
+  { contains = ["enter to select"] },
+  { contains = ["esc to cancel"] },
+  { contains = ["tab/arrow keys"] },
+  { contains = ["arrow keys to navigate"] },
+  { contains = ["↑/↓ to navigate"] },
+]
+
+[[rules]]
+id = "osc_title_idle"
+state = "idle"
+priority = 250
+region = "osc_title"
+visible_idle = true
+regex = ['^\x{2733}\x{FE0E}? ']
